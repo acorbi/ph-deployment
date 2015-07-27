@@ -1,0 +1,29 @@
+- name: Ensure that ph_root is there
+  file: path="{{ph_root}}" state=directory
+
+- name: Cloning Pixelhumain
+  git: repo=https://github.com/pixelhumain/pixelhumain.git
+        dest="{{ph_root}}"
+        version=master
+
+- name: Copy dbconfig.php over
+  template: src=dbconfig.php dest="{{ph_root}}/ph/protected/config/dbconfig.php"
+
+- name: Ensure that runtime directory is there
+  file: path="{{ph_root}}/ph/protected/runtime" state=directory
+
+- name: Ensure that assets is there
+  file: path="{{ph_root}}/ph/assets" state=directory
+
+- name: Update composer
+  shell: composer update
+  args:
+    chdir: "{{ph_root}}/ph/"
+
+- name: Install dependencies using composer
+  shell: composer install
+  args:
+    chdir: "{{ph_root}}/ph/"
+
+- name: Create modules folder
+  file: path="../{{ph_root}}/modules" state=directory

@@ -1,0 +1,7 @@
+ph_root: /home/vagrant/webapps/ph
+ph_domain: www.pixelhumain.dev
+
+ph_db_name: NAME
+ph_db_test_name: NAME
+ph_db_user: USER
+ph_db_password: PWD

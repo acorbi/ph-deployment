@@ -1,0 +1,91 @@
+---
+- name: add new sources.list that checks for mirror
+  copy: src=sources.list dest=/etc/apt/sources.list owner=root group=root mode=0644
+  sudo: yes
+
+- name: Adding mongodb key
+  apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=7F0CEB10
+  sudo: yes
+
+- name: Adding mongodb key
+  shell: echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+  sudo: yes
+
+- name: Update package list
+  apt: update_cache=yes
+  sudo: yes
+
+- name: Install required packages.
+  action: apt pkg={{ item }} state=present
+  sudo: yes
+  with_items:
+    - git-core
+    - apache2
+    - libapache2-mod-wsgi
+    - php5
+    - php5-dev
+    - php5-cli
+    - php-pear
+    - php5-curl
+    - mongodb-org
+
+- name: Install python-pip
+  apt: name=python-pip state=present
+  sudo: yes
+
+- name: Install pip
+  easy_install: name=pip executable=easy_install-2.7
+
+- name: Install pymongo
+  pip: name=pymongo
+  sudo: yes
+
+- name: Start mongod daemon
+  service: name=mongod state=started
+  sudo: yes
+
+- name: Install mongo driver
+  shell: pecl install mongo
+  sudo: yes
+  ignore_errors: yes
+
+- name: Ensure mongo.so is on extension variable
+  ini_file: dest=/etc/php5/cli/php.ini section=extensions option=extension value=mongo.so backup=yes
+  sudo: yes
+
+- name: Create MongoDB DB
+  shell: mongo mydb --eval "db.createCollection('{{ph_db_name}}')"
+
+- name: Create MongoDB user
+  mongodb_user: database={{ph_db_name}} name={{ph_db_user}} password={{ph_db_password}} state=present
+
+- name: Add vhost configuration file to sites-available
+  template: src=ph.vagrantbox.conf.j2 dest=/etc/apache2/sites-available/ph.vagrantbox.conf
+  sudo: yes
+
+- name: Disable default site
+  command: a2dissite 000-default
+  sudo: yes
+
+- name: Enable our new site
+  command: a2ensite ph.vagrantbox
+  sudo: yes
+
+- name: Enable rewrite mod
+  command: a2enmod rewrite
+  sudo: yes
+
+- name: Restart apache
+  service: name=apache2 state=restarted
+  sudo: yes
+
+- name: Install composer
+  shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin creates=/usr/local/bin/composer
+  sudo: yes
+
+- name: Rename composer.phar to composer
+  shell: mv /usr/local/bin/composer.phar /usr/local/bin/composer creates=/usr/local/bin/composer
+  sudo: yes
+
+- name: Make composer executable
+  file: path=/usr/local/bin/composer mode=a+x state=file

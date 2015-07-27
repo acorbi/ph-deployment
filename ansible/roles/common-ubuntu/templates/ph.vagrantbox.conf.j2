@@ -1,0 +1,14 @@
+<VirtualHost *:80>
+  ServerName {{ph_domain}}
+  ServerAlias {{ph_domain}}
+  DocumentRoot {{ph_root}}
+  ErrorLog /var/log/apache2/ph.vagrantbox-error.log
+  CustomLog /var/log/apache2/ph.vagrantbox-access.log combined
+
+  <Directory {{ph_root}}>
+    Options FollowSymLinks
+    AllowOverride All
+    Require all granted
+  </Directory>
+
+</VirtualHost>
