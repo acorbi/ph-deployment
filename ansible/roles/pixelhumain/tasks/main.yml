@@ -26,24 +26,24 @@
     chdir: "{{ph_root}}/ph/"
 
 - name: Create modules folder
-  file: path="../{{ph_root}}/modules" state=directory
+  file: path="{{ph_modules}}" state=directory
 
-- name: Download citizenToolkit module
+- name: Download citizenToolKit module
   git: repo=https://github.com/pixelhumain/citizenToolKit.git
-        dest="../{{ph_root}}/modules/citizenToolkit"
+        dest="{{ph_modules}}/citizenToolKit"
         version=master
 
 - name: Download communecter module
   git: repo=https://github.com/pixelhumain/communecter.git
-        dest="../{{ph_root}}/modules/communecter"
+        dest="{{ph_modules}}/communecter"
         version=master
 
 - name: Download cityData module
   git: repo=https://github.com/pixelhumain/cityData.git
-        dest="../{{ph_root}}/modules/cityData"
+        dest="{{ph_modules}}/cityData"
         version=master
 
 - name: Download opendata module
   git: repo=https://github.com/pixelhumain/opendata.git
-        dest="../{{ph_root}}/modules/opendata"
+        dest="{{ph_modules}}/opendata"
         version=master

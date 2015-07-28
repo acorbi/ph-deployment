@@ -6,7 +6,7 @@
   CustomLog /var/log/apache2/ph.vagrantbox-access.log combined
 
   <Directory {{ph_root}}>
-    Options FollowSymLinks
+    Options Indexes FollowSymLinks Includes ExecCGI
     AllowOverride All
     Require all granted
   </Directory>

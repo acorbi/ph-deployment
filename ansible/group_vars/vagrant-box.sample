@@ -1,4 +1,5 @@
 ph_root: /home/vagrant/webapps/ph
+ph_modules: /home/vagrant/webapps/modules
 ph_domain: www.pixelhumain.dev
 
 ph_db_name: NAME

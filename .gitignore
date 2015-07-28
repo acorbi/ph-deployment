@@ -1,6 +1,6 @@
 **/group_vars/vagrant-box
 **/stage
-
+home
 .remote-sync.json
 .vagrant
 
